@@ -1,0 +1,1 @@
+ g++ solids.cpp src/kohonen3d.cpp src/kohonen3d.h -o solids -lGL -lGLU -lglut && ./solids
