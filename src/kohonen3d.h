@@ -25,7 +25,6 @@ public:
 
     const std::vector<std::vector<double>> &getTrainedPatterns() const { return trained_patterns_; }
 
-    // private:
     int x_dim_;
     int y_dim_;
     int z_dim_;
