@@ -17,6 +17,26 @@ $(TARGET): $(SRC) | build
 cuda: $(SRC) $(CUDA_SRC) | build
 	$(NVCC) $(NVCCFLAGS) -o $(TARGET) $(SRC) $(CUDA_SRC)
 
+# TRAINING
+TRAIN3D_SRC = examples/train/train3D.cpp src/kohonen3d.cpp
+TRAIN3D_TARGET = build/train3d
+
+TRAIN2D_SRC = examples/train/train2D.cpp src/kohonen.cpp
+TRAIN2D_TARGET = build/train2d
+
+train3d: $(TRAIN3D_SRC) | build
+	$(CXX) $(CXXFLAGS) -o $(TRAIN3D_TARGET) $(TRAIN3D_SRC)
+
+run-train3d: train3d
+	./$(TRAIN3D_TARGET)
+
+train2d: $(TRAIN2D_SRC) | build
+	$(CXX) $(CXXFLAGS) -o $(TRAIN2D_TARGET) $(TRAIN2D_SRC)
+
+run-train2d: train2d
+	./$(TRAIN2D_TARGET)
+
+# VISUALIZATION
 SIMPLE_VIS_SRC = examples/visualize/simple_example.cpp examples/visualize/visualization.cpp examples/visualize/training.cpp src/kohonen3d.cpp
 VIS_SRC = examples/visualize/main.cpp examples/visualize/visualization.cpp examples/visualize/training.cpp src/kohonen3d.cpp
 VIS_TARGET = build/solids

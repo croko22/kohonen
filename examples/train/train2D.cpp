@@ -52,8 +52,8 @@ int main()
         std::chrono::duration<double> elapsed = end - start;
         std::cout << "Training completed in " << elapsed.count() << " seconds" << std::endl;
 
-        som.save("models/kohonen_model.bin");
-        std::cout << "Model saved to kohonen_model.bin" << std::endl;
+        som.save("models/kohonen_model_2D.bin");
+        std::cout << "Model saved to kohonen_model_2D.bin" << std::endl;
 
         std::cout << "\nTesting with evaluation data:" << std::endl;
         for (int class_id = 0; class_id < 10; ++class_id)
