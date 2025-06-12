@@ -24,16 +24,10 @@ int main(int argc, char **argv)
         std::cout << "Pattern size: " << pattern_size << std::endl;
 
         Kohonen3D *som = new Kohonen3D(10, 10, 10, pattern_size);
-
-        std::cout << "Training Kohonen 3D network..." << std::endl;
-        auto start = std::chrono::high_resolution_clock::now();
-
         KohonenVisualizer visualizer(som);
 
         visualizer.training_patterns = train_patterns;
-
         visualizer.initGL(argc, argv);
-
         visualizer.run();
 
         delete som;

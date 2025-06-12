@@ -103,16 +103,14 @@ void Kohonen3D::train(const std::vector<std::vector<double>> &patterns,
                       int epochs, double initial_learning_rate)
 {
     trained_patterns_ = patterns;
-
     double initial_radius = std::max({x_dim_, y_dim_, z_dim_}) / 2.0;
-    double final_radius = 1.0;
+    double time_constant = epochs / log(initial_radius);
 
     for (int epoch = 0; epoch < epochs; ++epoch)
     {
-
-        double progress = static_cast<double>(epoch) / epochs;
-        double learning_rate = initial_learning_rate * (1.0 - progress);
-        double radius = initial_radius * std::pow(final_radius / initial_radius, progress);
+        double learning_rate = initial_learning_rate * exp(-epoch / time_constant);
+        double radius = initial_radius * exp(-epoch / time_constant);
+        radius = std::max(1.0, radius);
 
         std::vector<std::vector<double>> shuffled_patterns = patterns;
         std::shuffle(shuffled_patterns.begin(), shuffled_patterns.end(), rng_);
@@ -138,7 +136,7 @@ void Kohonen3D::save(const std::string &filename) const
         throw std::runtime_error("Cannot open file for writing: " + filename);
     }
 
-    out << x_dim_ << " " << y_dim_ << " " << z_dim_ << " " << input_size_ << "\n";
+    out << x_dim_ << "," << y_dim_ << "," << z_dim_ << "," << input_size_ << "\n";
 
     for (int x = 0; x < x_dim_; ++x)
     {
@@ -146,9 +144,12 @@ void Kohonen3D::save(const std::string &filename) const
         {
             for (int z = 0; z < z_dim_; ++z)
             {
-                for (double weight : neurons_[x][y][z].weights)
+                const auto &weights = neurons_[x][y][z].weights;
+                for (size_t i = 0; i < weights.size(); ++i)
                 {
-                    out << weight << " ";
+                    out << weights[i];
+                    if (i != weights.size() - 1)
+                        out << ",";
                 }
                 out << "\n";
             }

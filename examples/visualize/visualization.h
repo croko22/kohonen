@@ -34,4 +34,6 @@ private:
     int mouseX, mouseY;
     int current_step;
     int total_steps;
+    int initial_radius;
+    double initial_learning_rate;
 };

@@ -116,32 +116,14 @@ std::pair<int, int> Kohonen::predict(const std::vector<double> &pattern) const
 
 void Kohonen::save(const std::string &filename) const
 {
-    // std::ofstream file(filename, std::ios::binary);
-    // if (!file)
-    //     throw std::runtime_error("No se pudo abrir el archivo para guardar el modelo.");
-
-    // file.write(reinterpret_cast<const char *>(&rows_), sizeof(rows_));
-    // file.write(reinterpret_cast<const char *>(&cols_), sizeof(cols_));
-    // file.write(reinterpret_cast<const char *>(&input_size_), sizeof(input_size_));
-
-    // for (const auto &row : neurons_)
-    // {
-    //     for (const auto &neuron : row)
-    //     {
-    //         file.write(reinterpret_cast<const char *>(neuron.weights.data()), neuron.weights.size() * sizeof(double));
-    //     }
-    // }
-
     std::ofstream file(filename);
     if (!file)
     {
         throw std::runtime_error("Could not open the file to save the model: " + filename);
     }
 
-    // 1. Write the header: rows, cols, input_size
     file << rows_ << "," << cols_ << "," << input_size_ << "\n";
 
-    // 2. Write the weights for each neuron
     for (const auto &row_vec : neurons_)
     {
         for (const auto &neuron : row_vec)

@@ -8,7 +8,8 @@ KohonenVisualizer *KohonenVisualizer::s_instance = nullptr;
 KohonenVisualizer::KohonenVisualizer(Kohonen3D *som)
     : som(som), zoom(10.0f), angleX(-20.0f), angleY(30.0f),
       mouseLeftDown(false), mouseX(0), mouseY(0),
-      current_step(0), total_steps(1000)
+      current_step(0), total_steps(1000), initial_radius(5),
+      initial_learning_rate(0.1)
 {
     s_instance = this;
 }
@@ -117,10 +118,15 @@ void KohonenVisualizer::idle()
 {
     if (current_step < total_steps)
     {
+        double progress = static_cast<double>(current_step) / total_steps;
+        double learning_rate = initial_learning_rate * exp(-progress * 5.0); // Exponential decay
+        double radius = std::max(1.0, initial_radius * (1.0 - progress));    // Linear decay to min 1.0
+
         int idx = std::uniform_int_distribution<>(0, training_patterns.size() - 1)(som->rng_);
-        som->updateWeights(training_patterns[idx], som->findBMU(training_patterns[idx]), 0.1, 1.0);
+        som->updateWeights(training_patterns[idx], som->findBMU(training_patterns[idx]), learning_rate, radius);
         current_step++;
-        std::cout << "Step: " << current_step << " / " << total_steps << "\r" << std::flush;
+        std::cout << "Step: " << current_step << " / " << total_steps
+                  << " LR: " << learning_rate << " R: " << radius << "\r" << std::flush;
         glutPostRedisplay();
     }
 }
