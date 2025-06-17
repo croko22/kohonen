@@ -60,7 +60,7 @@ run: $(TARGET)
 	./$(TARGET)
 
 
-VISUALIZE_PATTERN_SRC = examples/visualize_patterns/main.cpp
+VISUALIZE_PATTERN_SRC = examples/visualize_patterns/main.cpp src/kohonen3d.cpp
 VISUALIZE_PATTERN_TARGET = build/viewer
 VISUALIZE_PATTERN_LIBS = -lGL -lglfw -lGLEW -lGLU
 

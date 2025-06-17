@@ -36,6 +36,8 @@ public:
 
     std::vector<std::vector<double>> trained_patterns_;
 
+    std::vector<double> getWeights(int x, int y, int z) const;
+
     void initializeWeights();
     std::tuple<int, int, int> findBMU(const std::vector<double> &pattern) const;
     void updateWeights(const std::vector<double> &pattern,

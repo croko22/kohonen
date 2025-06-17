@@ -16,6 +16,15 @@ Kohonen3D::Kohonen3D(int x_dim, int y_dim, int z_dim, int input_size)
     initializeWeights();
 }
 
+std::vector<double> Kohonen3D::getWeights(int x, int y, int z) const
+{
+    if (x < 0 || x >= x_dim_ || y < 0 || y >= y_dim_ || z < 0 || z >= z_dim_)
+    {
+        throw std::out_of_range("Coordinates out of bounds");
+    }
+    return neurons_[x][y][z].weights;
+}
+
 void Kohonen3D::initializeWeights()
 {
     for (int x = 0; x < x_dim_; ++x)
@@ -165,24 +174,70 @@ void Kohonen3D::load(const std::string &filename)
         throw std::runtime_error("Cannot open file for reading: " + filename);
     }
 
-    in >> x_dim_ >> y_dim_ >> z_dim_ >> input_size_;
+    // Leer encabezado
+    std::string header;
+    std::getline(in, header);
+    int x_dim = 0, y_dim = 0, z_dim = 0, input_size = 0;
+
+    int result = sscanf(header.c_str(), "%d,%d,%d,%d", &x_dim, &y_dim, &z_dim, &input_size);
+    if (result != 4)
+    {
+        throw std::runtime_error("Invalid header format. Expected 'x,y,z,input_size'");
+    }
+
+    x_dim_ = x_dim;
+    y_dim_ = y_dim;
+    z_dim_ = z_dim;
+    input_size_ = input_size;
 
     neurons_.resize(x_dim_,
                     std::vector<std::vector<SOMNeuron3D>>(y_dim_,
                                                           std::vector<SOMNeuron3D>(z_dim_)));
 
-    for (int x = 0; x < x_dim_; ++x)
+    std::string line;
+    int neuron_index = 0;
+
+    while (std::getline(in, line) && neuron_index < x_dim_ * y_dim_ * z_dim_)
     {
-        for (int y = 0; y < y_dim_; ++y)
+        std::istringstream ss(line);
+        std::string token;
+        std::vector<double> weights;
+
+        while (std::getline(ss, token, ','))
         {
-            for (int z = 0; z < z_dim_; ++z)
+            try
             {
-                neurons_[x][y][z].weights.resize(input_size_);
-                for (int i = 0; i < input_size_; ++i)
-                {
-                    in >> neurons_[x][y][z].weights[i];
-                }
+                weights.push_back(std::stod(token));
+            }
+            catch (const std::invalid_argument &)
+            {
+                throw std::runtime_error("Error parsing weight at line " + std::to_string(neuron_index + 1));
             }
         }
+
+        if (weights.size() != input_size_)
+        {
+            throw std::runtime_error("Line " + std::to_string(neuron_index + 1) +
+                                     " has invalid number of weights (" +
+                                     std::to_string(weights.size()) +
+                                     "), expected " + std::to_string(input_size_));
+        }
+
+        int x = neuron_index / (y_dim_ * z_dim_);
+        int y = (neuron_index / z_dim_) % y_dim_;
+        int z = neuron_index % z_dim_;
+
+        neurons_[x][y][z].weights = std::move(weights);
+        ++neuron_index;
     }
+
+    if (neuron_index < x_dim_ * y_dim_ * z_dim_)
+    {
+        throw std::runtime_error("File ended prematurely. Expected " +
+                                 std::to_string(x_dim_ * y_dim_ * z_dim_) +
+                                 " neurons, only read " +
+                                 std::to_string(neuron_index));
+    }
+
+    std::cout << "Loaded " << neuron_index << " neurons successfully." << std::endl;
 }
