@@ -47,3 +47,8 @@ Modificar config.h para ajustar:
 - Compilador C++17
 - Bibliotecas OpenGL
 - GLFW y GLAD instalados
+
+## Capturas
+
+![alt text](docs/images/image-1.png)
+![alt text](docs/images/image.png)
