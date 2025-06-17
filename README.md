@@ -52,3 +52,4 @@ Modificar config.h para ajustar:
 
 ![alt text](docs/images/image-1.png)
 ![alt text](docs/images/image.png)
+![alt text](docs/images/image-2.png)
