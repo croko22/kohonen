@@ -131,7 +131,7 @@ def visualize_label_map(som_grid: np.ndarray, label_map: dict):
 if __name__ == '__main__':
     # --- 1. CONFIGURACIÓN ---
     # Ruta al modelo SOM guardado
-    MODEL_FILE = '../models/kohonen_model.bin' # Asegúrate que esta ruta sea correcta
+    MODEL_FILE = '../models/kohonen_model_3D.bin' # Asegúrate que esta ruta sea correcta
 
     # (Opcional) Rutas a tus datos para el Mapa de Activaciones
     # Cambia esto por la ruta a los datos con los que quieres probar el mapa
