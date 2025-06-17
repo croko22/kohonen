@@ -6,15 +6,26 @@
 #include <algorithm>
 #include <chrono>
 
-int main()
+int main(int argc, char* argv[])
 {
     try
     {
-        std::cout << "Loading training data from CSV..." << std::endl;
-        auto train_data = load_mnist_csv("data/fashion-mnist_train.csv");
+        if (argc != 2)
+        {
+            std::cerr << "Uso: " << argv[0] << " <ruta_base_csv>" << std::endl;
+            std::cerr << "Ejemplo: " << argv[0] << " data/fashion-mnist" << std::endl;
+            return 1;
+        }
 
-        std::cout << "Loading test data from CSV..." << std::endl;
-        auto test_data = load_mnist_csv("data/fashion-mnist_test.csv");
+        std::string base_path = argv[1];
+        std::string train_path = base_path + "_train.csv";
+        std::string test_path = base_path + "_test.csv";
+
+        std::cout << "Loading training data from: " << train_path << std::endl;
+        auto train_data = load_mnist_csv(train_path);
+
+        std::cout << "Loading test data from: " << test_path << std::endl;
+        auto test_data = load_mnist_csv(test_path);
 
         std::cout << "Training data loaded: " << train_data.images.size() << " samples." << std::endl;
         std::cout << "Test data loaded: " << test_data.images.size() << " samples." << std::endl;

@@ -6,6 +6,8 @@ SRC = examples/train/main.cpp src/kohonen.cpp
 CUDA_SRC = src/mlp_cuda.cu
 TARGET = build/main
 
+FILE ?= input.txt
+
 all: build $(TARGET)
 
 build:
@@ -28,7 +30,7 @@ train3d: $(TRAIN3D_SRC) | build
 	$(CXX) $(CXXFLAGS) -o $(TRAIN3D_TARGET) $(TRAIN3D_SRC)
 
 run-train3d: train3d
-	./$(TRAIN3D_TARGET)
+	./$(TRAIN3D_TARGET) $(FILE)
 
 train2d: $(TRAIN2D_SRC) | build
 	$(CXX) $(CXXFLAGS) -o $(TRAIN2D_TARGET) $(TRAIN2D_SRC)
@@ -57,5 +59,14 @@ run-visualize: visualize
 run: $(TARGET)
 	./$(TARGET)
 
-clean:
-	rm -rf build
+
+VISUALIZE_PATTERN_SRC = examples/visualize_patterns/main.cpp
+VISUALIZE_PATTERN_TARGET = build/viewer
+VISUALIZE_PATTERN_LIBS = -lGL -lglfw -lGLEW -lGLU
+
+
+viewer: $(VISUALIZE_PATTERN_SRC) | build
+	$(CXX) $(CXXFLAGS) -o $(VISUALIZE_PATTERN_TARGET) $(VISUALIZE_PATTERN_SRC) $(VISUALIZE_PATTERN_LIBS)
+
+run-train-visualizer: viewer
+	./$(VISUALIZE_PATTERN_TARGET) $(FILE)

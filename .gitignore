@@ -2,3 +2,6 @@
 /models
 /data
 solids
+/.vscode
+/venv
+.venv
